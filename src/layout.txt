@@ -1,0 +1,4 @@
+student class get info sets info
+manager adds, removes, edits and shi
+database to stroe
+
