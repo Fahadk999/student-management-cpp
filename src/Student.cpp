@@ -1,4 +1,3 @@
-// student class get info sets info
 #include "Student.hpp"
 
 Info::Info (
@@ -33,12 +32,13 @@ void Student::SetInfo () {
 
     const short int maxMarks = 100;
     std::cin.ignore();
-    setString(this->fnameBuffer, 21, "Enter Student First Name: ");
-    setString(this->lnameBuffer, 21, "Enter Student Last Name: ");
+    setString(this->fnameBuffer, 10, "Enter Student First Name: ");
+    setString(this->lnameBuffer, 10, "Enter Student Last Name: ");
     setUint(this->age, 150, "Enter Student Age (0-150): ");
     setUint(this->marks.bio, maxMarks, "Enter Marks in Biology: ");
     setUint(this->marks.chem, maxMarks, "Enter Marks in Chemistry: ");
     setUint(this->marks.phy, maxMarks, "Enter Marks in Physics: ");
+    this->percentage = this->marks.GetPercentage(300);
 }
 
 Info Student::GetInfo () const {
@@ -53,7 +53,7 @@ Info Student::GetInfo () const {
     return info;
 }
 
-double MarkList::GetPercentage (const unsigned short int& total) {
+double MarkList::GetPercentage (unsigned short int total) {
     const unsigned short int obtained = this->bio + this->chem + this->phy;
-    return (obtained/total)*100;
+    return (static_cast<double>(obtained)/total)*100.0;
 }

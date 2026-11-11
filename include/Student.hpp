@@ -4,12 +4,12 @@
 struct MarkList {
     unsigned short int bio, chem, phy;
 
-    double GetPercentage (const unsigned short int& totat);
+    double GetPercentage (unsigned short int);
 };
 
 struct Info {
     unsigned int id;
-    char fnameBuffer[21], lnameBuffer[21];
+    char fnameBuffer[10], lnameBuffer[10];
     unsigned short int age;
     MarkList marks; 
     double percentage;
@@ -29,7 +29,7 @@ static unsigned int studentId = 0;
 class Student {
 private:
     unsigned int id = 0;
-    char fnameBuffer[21], lnameBuffer[21];
+    char fnameBuffer[10], lnameBuffer[10];
     unsigned short int age;
     MarkList marks; 
     double percentage;

@@ -3,7 +3,7 @@
 void Manager::AddStudent () {
     Student newStudent;
     newStudent.SetInfo();
-    if (studentCount <= maxCount) {
+    if (studentCount < maxCount) {
         studentList[studentCount] = newStudent;
         studentCount++;
     } else {
@@ -17,8 +17,28 @@ void Manager::RemoveStudent () {
 
 void Manager::ShowList () {
     if (studentCount > 0) {
+        std::cout
+            << std::left
+            << std::setw(15) << "First Name"
+            << std::setw(15) << "Last Name"
+            << std::setw(7) << "Age"
+            << std::setw(7) << "Math"
+            << std::setw(7) << "Chem"
+            << std::setw(7) << "Phy" << std::endl;
         for (int i = 0; i < studentCount; i++) {
-            std::cout << studentList[i].GetInfo().fnameBuffer << std::endl;
+            Info info = studentList[i].GetInfo();
+            char floatBuffer[6];
+            snprintf(floatBuffer, sizeof(floatBuffer), "%.2f", info.percentage);
+            floatBuffer[5] = '%';
+            std::cout
+                << std::left
+                << std::setw(15) << info.fnameBuffer
+                << std::setw(15) << info.lnameBuffer
+                << std::setw(7) << info.age
+                << std::setw(7) << info.marks.bio
+                << std::setw(7) << info.marks.chem
+                << std::setw(7) << info.marks.phy
+                << std::setw(15) << std::setprecision(4) << floatBuffer << std::endl;
         }
     } else {
         std::cout << "List is empty";

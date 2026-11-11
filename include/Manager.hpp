@@ -1,5 +1,6 @@
 #include "Student.hpp"
 #include <iomanip>
+#include <cstdio>
 
 class Manager {
 private:

@@ -1,6 +1,6 @@
 CXX := g++
 CXXFLAGS := -Wall -Wextra -std=c++11 -Iinclude 
-LDFLAGS := 
+LDFLAGS := -lsqlite3
 
 TARGET := build/app
 SRCDIR := src
