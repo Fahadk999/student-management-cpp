@@ -8,12 +8,14 @@ struct MarkList {
 };
 
 struct Info {
+    unsigned int id;
     char fnameBuffer[21], lnameBuffer[21];
     unsigned short int age;
     MarkList marks; 
     double percentage;
     bool passStatus{false};
     Info (
+        unsigned int _id,
         const char* fname,
         const char* lname,
         const unsigned short int& _age,
@@ -22,9 +24,11 @@ struct Info {
     );
 };
 
-
+// remove id when database
+static unsigned int studentId = 0;
 class Student {
 private:
+    unsigned int id = 0;
     char fnameBuffer[21], lnameBuffer[21];
     unsigned short int age;
     MarkList marks; 
@@ -32,7 +36,9 @@ private:
     bool passStatus{false};
     // date to get date student was added
 public:
-    Student () {};
+    Student () {
+        id = studentId++;
+    };
 
     void SetInfo ();
     Info GetInfo () const;

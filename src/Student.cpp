@@ -2,6 +2,7 @@
 #include "Student.hpp"
 
 Info::Info (
+    unsigned int _id,
     const char* fname,
     const char* lname,
     const unsigned short int& _age,
@@ -9,6 +10,7 @@ Info::Info (
     double _percentage
         )
     :   
+    id(_id),
     age(_age),
     percentage(_percentage)
 {
@@ -30,6 +32,7 @@ void Student::SetInfo () {
     };
 
     const short int maxMarks = 100;
+    std::cin.ignore();
     setString(this->fnameBuffer, 21, "Enter Student First Name: ");
     setString(this->lnameBuffer, 21, "Enter Student Last Name: ");
     setUint(this->age, 150, "Enter Student Age (0-150): ");
@@ -40,6 +43,7 @@ void Student::SetInfo () {
 
 Info Student::GetInfo () const {
     Info info{
+            this->id,
             this->fnameBuffer,
             this->lnameBuffer,
             this->age,
