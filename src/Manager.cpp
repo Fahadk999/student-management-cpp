@@ -46,6 +46,7 @@ void Manager::ShowList () {
 }
 
 void Manager::Run () {
+    studentDB.InitDB();
     bool running = true;
     short int choice;
     do {
@@ -68,6 +69,7 @@ void Manager::Run () {
                 break;
             case 4:
                 std::cout << "Exited successfully\n";
+                studentDB.CloseDB();
                 running = false;
                 break;
             default:

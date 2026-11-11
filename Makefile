@@ -1,24 +1,29 @@
 CXX := g++
-CXXFLAGS := -Wall -Wextra -std=c++11 -Iinclude 
+CXXFLAGS := -Wall -Wextra -std=c++11 -Iinclude -IDatabaseManager/include
 LDFLAGS := -lsqlite3
 
 TARGET := build/app
 SRCDIR := src
+DBDIR := DatabaseManager
 OBJDIR := build/obj
 
-SRCDIR := src
-OBJDIR := build/obj
+SRCS := $(wildcard $(SRCDIR)/*.cpp) \
+        $(wildcard $(DBDIR)/*.cpp)
 
-SRCS := $(wildcard $(SRCDIR)/*.cpp)
-OBJS := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS))
+OBJS := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(filter $(SRCDIR)/%.cpp,$(SRCS))) \
+        $(patsubst $(DBDIR)/%.cpp,$(OBJDIR)/%.o,$(filter $(DBDIR)/%.cpp,$(SRCS)))
 
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
 	mkdir -p build
-	$(CXX) $(OBJS) -o $@
+	$(CXX) $(OBJS) -o $@ $(LDFLAGS)
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
+	mkdir -p $(OBJDIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(OBJDIR)/%.o: $(DBDIR)/%.cpp
 	mkdir -p $(OBJDIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
