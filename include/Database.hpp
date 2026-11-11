@@ -10,4 +10,5 @@ private:
 public:
     Database (const char*);
     bool MakeTable (const char*);
+    bool ShowData (const char*);
 };
