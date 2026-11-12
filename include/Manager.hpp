@@ -1,7 +1,6 @@
 #include "Student.hpp"
 #include "Database.hpp"
 #include <iomanip>
-#include <cstdio>
 
 class Manager {
 private:
@@ -12,6 +11,7 @@ private:
     void AddStudent ();
     void RemoveStudent ();
     void ShowList ();
+    void SearchStudent ();
 public:
     Manager ();
 

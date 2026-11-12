@@ -18,7 +18,7 @@ public:
     bool MakeTable (const char*);
     bool ReadData (const char*);
     bool UpdateData (const char*);
-    bool ClearDB (const char*); // made this take table not db name
+    bool ClearDB (const char*); 
     void CloseDB ();
     bool Execute (const char*);
 };

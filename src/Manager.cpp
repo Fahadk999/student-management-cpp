@@ -1,5 +1,6 @@
 #include "Manager.hpp"
 
+// add student search on id and name
 Manager::Manager () {
     studentDB.InitDB();
     const char* createTable =
@@ -21,7 +22,6 @@ void Manager::AddStudent () {
     if (studentCount < maxCount) {
         Info info = newStudent.GetInfo();
         char query[500];
-        // start, fname, lname, int(bio, chem, phy), float(percnetage), end
 
         std::snprintf(query, sizeof(query), 
             "INSERT INTO students (FirstName, LastName, Biology, Chemistry, Physics, Percentage) "
@@ -43,40 +43,98 @@ void Manager::AddStudent () {
 }
 
 void Manager::RemoveStudent () {
-    std::cout << "Enter id to remove\n";
+    int choice;
+    std::cout << 
+        "Removing by:\n1. ID\n2. Name\nChoice: ";
+    std::cin >> choice;
+
+    char query[200];
+    switch (choice) {
+        case 1: {
+            int id;
+            std::cout << "Enter student ID: "; std::cin >> id;
+            std::snprintf(query, sizeof(query),
+                "DELETE FROM students WHERE ID=%d", id);
+            break;
+                }
+        case 2: {
+            char fnameBuffer[nameLen], lnameBuffer[nameLen];
+            std::cout << "Enter Student First Name: ";
+            std::cin.ignore();
+            std::cin.getline(fnameBuffer, nameLen);
+            std::cout << "Enter Student Last Name: ";
+            std::cin.getline(lnameBuffer, nameLen);
+            std::snprintf(query, sizeof(query),
+                "DELETE FROM students WHERE FirstName='%s' AND LastName='%s'"
+                , fnameBuffer, lnameBuffer);
+            break;
+            }
+        default:
+            std::cerr << "Wrong choice!";
+            return;
+    }
+    studentDB.Execute(query);
 }
 
 void Manager::ShowList () {
     const char* query =
         "SELECT * FROM students;";
     studentDB.ReadData(query);
-    // if (studentCount > 0) {
-    //     std::cout
-    //         << std::left
-    //         << std::setw(15) << "First Name"
-    //         << std::setw(15) << "Last Name"
-    //         << std::setw(7) << "Age"
-    //         << std::setw(7) << "Bio"
-    //         << std::setw(7) << "Chem"
-    //         << std::setw(7) << "Phy" << std::endl;
-    //     for (int i = 0; i < studentCount; i++) {
-    //         Info info = studentList[i].GetInfo();
-    //         char floatBuffer[6];
-    //         snprintf(floatBuffer, sizeof(floatBuffer), "%.2f", info.percentage);
-    //         floatBuffer[5] = '%';
-    //         std::cout
-    //             << std::left
-    //             << std::setw(15) << info.fnameBuffer
-    //             << std::setw(15) << info.lnameBuffer
-    //             << std::setw(7) << info.age
-    //             << std::setw(7) << info.marks.bio
-    //             << std::setw(7) << info.marks.chem
-    //             << std::setw(7) << info.marks.phy
-    //             << std::setw(15) << std::setprecision(4) << floatBuffer << std::endl;
-    //     }
-    // } else {
-    //     std::cout << "List is empty";
-    // }
+}
+
+void Manager::SearchStudent () {
+    char query[200];
+    int choice;
+    std::cout << "Search by"
+        << "\n1. ID\n2. First Name\n3. Last Name\n4. Full Name"
+        << "\nYour Choice: ";
+    std::cin >> choice;
+    switch (choice)
+    {
+        case 1: {
+            int id;
+            std::cout << "Enter student ID: "; std::cin >> id;
+            std::snprintf(query, sizeof(query),
+                "SELECT * FROM students WHERE ID=%d", id);
+            break;
+                }
+        case 2: {
+            char fnameBuffer[nameLen];
+            std::cout << "Enter Student First Name: ";
+            std::cin.ignore();
+            std::cin.getline(fnameBuffer, nameLen);
+            std::snprintf(query, sizeof(query),
+                "SELECT * FROM students WHERE FirstName='%s';"
+                , fnameBuffer);
+            break;
+            }
+        case 3: {
+            char lnameBuffer[nameLen];
+            std::cout << "Enter Student Last Name: ";
+            std::cin.ignore();
+            std::cin.getline(lnameBuffer, nameLen);
+            std::snprintf(query, sizeof(query),
+                "SELECT * FROM students WHERE LastName='%s';"
+                , lnameBuffer);
+            break;
+            }
+        case 4: {
+            char fnameBuffer[nameLen], lnameBuffer[nameLen];
+            std::cout << "Enter Student First Name: ";
+            std::cin.ignore();
+            std::cin.getline(fnameBuffer, nameLen);
+            std::cout << "Enter Student Last Name: ";
+            std::cin.getline(lnameBuffer, nameLen);
+            std::snprintf(query, sizeof(query),
+                "SELECT * FROM students WHERE FirstName='%s' AND LastName='%s';"
+                , fnameBuffer, lnameBuffer);
+            break;
+            }
+        default:
+            std::cerr << "Wrong choice!\n";
+            return;
+    }
+    studentDB.ReadData(query);
 }
 
 void Manager::Run () {
@@ -87,7 +145,8 @@ void Manager::Run () {
             << "1. Add Student\n"
             << "2. Remove Student\n"
             << "3. Show List\n"
-            << "4. Exit\n"
+            << "4. Search Student\n"
+            << "5. Exit\n"
             << "Your choice: ";
         std::cin >> choice;
         switch (choice) {
@@ -101,6 +160,9 @@ void Manager::Run () {
                 ShowList();
                 break;
             case 4:
+                SearchStudent();
+                break;
+            case 5:
                 std::cout << "Exited successfully\n";
                 running = false;
                 break;

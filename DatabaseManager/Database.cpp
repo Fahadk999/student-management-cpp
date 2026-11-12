@@ -11,7 +11,7 @@ int callback (void* data, int argc, char** argv, char** colName) {
 }
 
 Database::Database (const char* _dbName) {
-    strcpy(this->dbName, _dbName); 
+    std::strcpy(this->dbName, _dbName); 
 }
 Database::~Database () {
     CloseDB();
@@ -70,7 +70,7 @@ bool Database::UpdateData (const char* query) {
 bool Database::ClearDB (const char* tableName) {
     const char* partOne = "DELETE FROM ";
     char query[200];
-    snprintf(query, sizeof(query), "%s%s%c", partOne, tableName, ';'); 
+    std::snprintf(query, sizeof(query), "%s%s%c", partOne, tableName, ';'); 
 
     return Execute(query);
 }
