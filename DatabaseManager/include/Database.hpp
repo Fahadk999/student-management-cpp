@@ -13,12 +13,12 @@ private:
 
 public:
     Database (const char*);
+    ~Database ();
     bool InitDB ();
     bool MakeTable (const char*);
-    bool ShowAllData (const char*);
     bool ReadData (const char*);
     bool UpdateData (const char*);
-    bool ClearDB ();
+    bool ClearDB (const char*); // made this take table not db name
     void CloseDB ();
     bool Execute (const char*);
 };

@@ -10,6 +10,13 @@ int callback (void* data, int argc, char** argv, char** colName) {
     return 0;
 }
 
+Database::Database (const char* _dbName) {
+    strcpy(this->dbName, _dbName); 
+}
+Database::~Database () {
+    CloseDB();
+}
+
 bool Database::Execute (const char* query) {
     int rc = sqlite3_exec(
         db,
@@ -26,10 +33,6 @@ bool Database::Execute (const char* query) {
     } return true;
 }
 
-Database::Database (const char* _dbName) {
-    strcpy(this->dbName, _dbName); 
-}
-
 bool Database::InitDB () {
     int rc = sqlite3_open((this->dbName), &db);
     if (rc != SQLITE_OK) {
@@ -40,10 +43,6 @@ bool Database::InitDB () {
 }
 
 bool Database::MakeTable (const char* query) {
-    return Execute(query);
-}
-
-bool Database::ShowAllData (const char* query) {
     return Execute(query);
 }
 
@@ -68,10 +67,10 @@ bool Database::UpdateData (const char* query) {
     return Execute(query);
 }
 
-bool Database::ClearDB () {
+bool Database::ClearDB (const char* tableName) {
     const char* partOne = "DELETE FROM ";
-    char query[50];
-    std::snprintf(query, sizeof(query), "%s%s%s", partOne, this->dbName, ";");
+    char query[200];
+    snprintf(query, sizeof(query), "%s%s%c", partOne, tableName, ';'); 
 
     return Execute(query);
 }
