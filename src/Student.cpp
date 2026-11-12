@@ -18,6 +18,12 @@ Info::Info (
     strcpy(lnameBuffer, lname);
 }
 
+unsigned int Student::studentId = 0;
+Student::Student()
+{
+    id = studentId++;
+};
+
 void Student::SetInfo () {
     auto setString = [] (char* buffer, const int& len, const char* msg) {
         std::cout << msg;
@@ -32,8 +38,8 @@ void Student::SetInfo () {
 
     const short int maxMarks = 100;
     std::cin.ignore();
-    setString(this->fnameBuffer, 10, "Enter Student First Name: ");
-    setString(this->lnameBuffer, 10, "Enter Student Last Name: ");
+    setString(this->fnameBuffer, nameLen, "Enter Student First Name: ");
+    setString(this->lnameBuffer, nameLen, "Enter Student Last Name: ");
     setUint(this->age, 150, "Enter Student Age (0-150): ");
     setUint(this->marks.bio, maxMarks, "Enter Marks in Biology: ");
     setUint(this->marks.chem, maxMarks, "Enter Marks in Chemistry: ");

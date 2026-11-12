@@ -13,7 +13,7 @@ private:
     void RemoveStudent ();
     void ShowList ();
 public:
-    Manager () = default;
+    Manager ();
 
     void Run ();
 };
