@@ -1,5 +1,4 @@
 #include "Database.hpp"
-#include <iostream>
 
 int callback (void* data, int argc, char** argv, char** colName) {
     for (int i = 0; i < argc; i++) {
@@ -11,35 +10,44 @@ int callback (void* data, int argc, char** argv, char** colName) {
     return 0;
 }
 
+bool Database::Execute (const char* query) {
+    int rc = sqlite3_exec(
+        db,
+        query,
+        nullptr,
+        nullptr,
+        &err
+    );
+    if (rc != SQLITE_OK) {
+        std::cerr << err << '\n';
+        sqlite3_free(err);
+        err = nullptr;
+        return false; 
+    } return true;
+}
+
 Database::Database (const char* _dbName) {
     strcpy(this->dbName, _dbName); 
 }
 
 bool Database::InitDB () {
-    int result = sqlite3_open((this->dbName), &db);
-
-    if (result != SQLITE_OK) {
+    int rc = sqlite3_open((this->dbName), &db);
+    if (rc != SQLITE_OK) {
+        std::cerr << this->err << '\n';
+        sqlite3_free(this->err);
         return false; 
     } return true;
 }
 
 bool Database::MakeTable (const char* query) {
-    char* errMsg = nullptr;
-    int rc = sqlite3_exec(
-        db,
-        query,
-        nullptr,
-        nullptr,
-        &errMsg
-    );
-
-    if (rc != SQLITE_OK) {
-        return false;
-        sqlite3_free(errMsg);
-    } return true;
+    return Execute(query);
 }
 
-bool Database::ShowData (const char* query) {
+bool Database::ShowAllData (const char* query) {
+    return Execute(query);
+}
+
+bool Database::ReadData (const char* query) {
     char *errMsg = nullptr;
     int rc = sqlite3_exec(
         db,
@@ -50,41 +58,14 @@ bool Database::ShowData (const char* query) {
     );
 
     if (rc != SQLITE_OK) {
-        return false;
+        std::cerr << errMsg << '\n';
         sqlite3_free(errMsg);
+        return false;
     } return true;
 }
 
-bool Database::ReadUser (const char* query) {
-    char *errMsg = nullptr;
-    int rc = sqlite3_exec(
-        db,
-        query,
-        callback,
-        nullptr,
-        &errMsg
-    );
-
-    if (rc != SQLITE_OK) {
-        return false;
-        sqlite3_free(errMsg);
-    } return true;
-}
-
-bool Database::UpdateUser (const char* query) {
-    char* errMsg = nullptr;
-    int rc = sqlite3_exec(
-        db,
-        query,
-        nullptr,
-        nullptr,
-        &errMsg
-    );
-
-    if (rc != SQLITE_OK) {
-        return false;
-        sqlite3_free(errMsg);
-    } return true;
+bool Database::UpdateData (const char* query) {
+    return Execute(query);
 }
 
 bool Database::ClearDB () {
@@ -92,20 +73,7 @@ bool Database::ClearDB () {
     char query[50];
     std::snprintf(query, sizeof(query), "%s%s%s", partOne, this->dbName, ";");
 
-    char* errMsg = nullptr;
-
-    int rc = sqlite3_exec(
-            db,
-            query,
-            nullptr,
-            nullptr,
-            &errMsg
-            );
-
-    if (rc != SQLITE_OK) {
-        sqlite3_free(errMsg);
-        return false;
-    } return true;
+    return Execute(query);
 }
 
 void Database::CloseDB () {

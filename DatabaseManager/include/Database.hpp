@@ -1,4 +1,5 @@
 #include <sqlite3.h>
+#include <iostream>
 #include <cstring>
 #include <cstdio>
 
@@ -8,15 +9,17 @@ class Database {
 private:
     char dbName[35];
     sqlite3* db;
+    char* err{nullptr};
 
 public:
     Database (const char*);
     bool InitDB ();
     bool MakeTable (const char*);
-    bool ShowData (const char*);
-    bool ReadUser (const char*);
-    bool UpdateUser (const char*);
+    bool ShowAllData (const char*);
+    bool ReadData (const char*);
+    bool UpdateData (const char*);
     bool ClearDB ();
     void CloseDB ();
+    bool Execute (const char*);
 };
 
