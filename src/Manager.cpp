@@ -1,9 +1,37 @@
 #include "Manager.hpp"
 
+Manager::Manager () {
+    const char* createTable =
+        "CREATE TABLE students ("
+        "ID int AUTO_INCREMENT PRIMARY KEY,"
+        "FirstName varchar(30) NOT NULL,"
+        "LastName varchar(30) NOT NULL,"
+        "Biology int,"
+        "Chemistry int,"
+        "Physics int,"
+        "Percentage float"
+        ");";
+    studentDB.MakeTable(createTable);
+}
+
 void Manager::AddStudent () {
     Student newStudent;
     newStudent.SetInfo();
     if (studentCount < maxCount) {
+        Info info = newStudent.GetInfo();
+        const char* start = 
+            "INSERT INTO students " 
+            "(FistName, LastName, Biology, Chemistry, Physics, Percentage) "
+            "Values (";
+        const char* end = ");";
+        char query[500];
+        // start, fname, lname, int(bio, chem, phy), float(percnetage), end
+        snprintf(query, sizeof(query), "%s%s%s%d%d%d%.2f%s", 
+        start, info.fnameBuffer, info.lnameBuffer,
+        info.marks.bio, info.marks.chem, info.marks.phy, info.percentage,
+        end);
+        studentDB.Execute(query);
+
         studentList[studentCount] = newStudent;
         studentCount++;
     } else {
@@ -22,7 +50,7 @@ void Manager::ShowList () {
             << std::setw(15) << "First Name"
             << std::setw(15) << "Last Name"
             << std::setw(7) << "Age"
-            << std::setw(7) << "Math"
+            << std::setw(7) << "Bio"
             << std::setw(7) << "Chem"
             << std::setw(7) << "Phy" << std::endl;
         for (int i = 0; i < studentCount; i++) {
