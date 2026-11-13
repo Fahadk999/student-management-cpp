@@ -46,3 +46,9 @@ public:
     void SetInfo();
     Info GetInfo() const;
 };
+
+void setUint (
+        unsigned short int&,
+        const short int&,
+        const char*);
+void setString (char*, const int&, const char*);
