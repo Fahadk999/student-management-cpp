@@ -47,8 +47,13 @@ public:
     Info GetInfo() const;
 };
 
+template <typename T, typename U>
 void setUint (
-        unsigned short int&,
-        const short int&,
+        const T&,
+        const U&,
+        const char*);
+template <typename T>
+void setUint (
+        const T&,
         const char*);
 void setString (char*, const int&, const char*);
