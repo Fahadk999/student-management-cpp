@@ -29,11 +29,20 @@ void Student::SetInfo () {
         std::cout << msg;
         std::cin.getline(buffer, len);
     };
-    auto setUint = [] (unsigned short int& buffer, const short int& range, const char* msg) {
+    auto setUint = [] (
+            unsigned short int& buffer,
+            const short int& range,
+            const char* msg = "") {
+        bool valid = true;
         do {
             std::cout << msg;
-            std::cin >> buffer;
-        } while (buffer > range);
+            if(!(std::cin >> buffer)) {
+                buffer = 0;
+                std::cin.clear();
+                std::cin.ignore();
+                valid = false;
+            } else { valid = true; }
+        } while (buffer > range || buffer < 0 || !valid);
     };
 
     const short int maxMarks = 100;
