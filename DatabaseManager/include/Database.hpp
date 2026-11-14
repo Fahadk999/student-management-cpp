@@ -23,5 +23,11 @@ public:
     bool ClearDB (const char*); 
     void CloseDB ();
     bool Execute (const char*);
+    int GetArgV ();
 };
 
+// temp here 
+int Database::GetLastId () {
+    // col Num
+    int colNum = 0;
+}
