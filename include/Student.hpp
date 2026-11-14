@@ -49,11 +49,37 @@ public:
 
 template <typename T, typename U>
 void setUint (
-        const T&,
-        const U&,
-        const char*);
+        T& buffer,
+        const U& range,
+        const char* msg = "") {
+    bool valid = true;
+    do {
+        std::cout << msg;
+        if(!(std::cin >> buffer)) {
+            buffer = 0;
+            std::cin.clear();
+            std::cin.ignore();
+            valid = false;
+        } else { valid = true; }
+    } while (buffer > range || buffer < 0 || !valid);
+}
 template <typename T>
 void setUint (
-        const T&,
-        const char*);
-void setString (char*, const int&, const char*);
+        T& buffer,
+        const char* msg = "") {
+    bool valid = true;
+    do {
+        std::cout << msg;
+        if(!(std::cin >> buffer)) {
+            buffer = 0;
+            std::cin.clear();
+            std::cin.ignore();
+            valid = false;
+        } else { valid = true; }
+    } while (buffer < 0 || !valid);
+}
+
+inline void setString (char* buffer, const int& len, const char* msg) {
+    std::cout << msg;
+    std::cin.getline(buffer, len);
+};

@@ -53,37 +53,3 @@ double MarkList::GetPercentage (unsigned short int total) {
     return (static_cast<double>(obtained)/total)*100.0;
 }
 
-void setUint (
-        unsigned short int& buffer,
-        const short int& range,
-        const char* msg = "") {
-    bool valid = true;
-    do {
-        std::cout << msg;
-        if(!(std::cin >> buffer)) {
-            buffer = 0;
-            std::cin.clear();
-            std::cin.ignore();
-            valid = false;
-        } else { valid = true; }
-    } while (buffer > range || buffer < 0 || !valid);
-}
-void setUint (
-        unsigned short int& buffer,
-        const char* msg = "") {
-    bool valid = true;
-    do {
-        std::cout << msg;
-        if(!(std::cin >> buffer)) {
-            buffer = 0;
-            std::cin.clear();
-            std::cin.ignore();
-            valid = false;
-        } else { valid = true; }
-    } while (buffer < 0 || !valid);
-}
-
-void setString (char* buffer, const int& len, const char* msg) {
-    std::cout << msg;
-    std::cin.getline(buffer, len);
-};
