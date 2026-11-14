@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Student.hpp"
 #include "Database.hpp"
 #include <iomanip>

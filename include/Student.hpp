@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <string.h>
 
@@ -44,4 +45,41 @@ public:
 
     void SetInfo();
     Info GetInfo() const;
+};
+
+template <typename T, typename U>
+void setUint (
+        T& buffer,
+        const U& range,
+        const char* msg = "") {
+    bool valid = true;
+    do {
+        std::cout << msg;
+        if(!(std::cin >> buffer)) {
+            buffer = 0;
+            std::cin.clear();
+            std::cin.ignore();
+            valid = false;
+        } else { valid = true; }
+    } while (buffer > range || buffer < 0 || !valid);
+}
+template <typename T>
+void setUint (
+        T& buffer,
+        const char* msg = "") {
+    bool valid = true;
+    do {
+        std::cout << msg;
+        if(!(std::cin >> buffer)) {
+            buffer = 0;
+            std::cin.clear();
+            std::cin.ignore();
+            valid = false;
+        } else { valid = true; }
+    } while (buffer < 0 || !valid);
+}
+
+inline void setString (char* buffer, const int& len, const char* msg) {
+    std::cout << msg;
+    std::cin.getline(buffer, len);
 };

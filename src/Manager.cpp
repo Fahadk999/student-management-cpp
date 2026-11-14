@@ -45,14 +45,14 @@ void Manager::AddStudent () {
 void Manager::RemoveStudent () {
     int choice;
     std::cout << 
-        "Removing by:\n1. ID\n2. Name\nChoice: ";
-    std::cin >> choice;
+        "Removing by:\n1. ID\n2. Name\n";
+    setUint(choice, "Choice: "); 
 
     char query[200];
     switch (choice) {
         case 1: {
             int id;
-            std::cout << "Enter student ID: "; std::cin >> id;
+            setUint(id, "Enter student ID: "); 
             std::snprintf(query, sizeof(query),
                 "DELETE FROM students WHERE ID=%d", id);
             break;
@@ -86,14 +86,13 @@ void Manager::SearchStudent () {
     char query[200];
     int choice;
     std::cout << "Search by"
-        << "\n1. ID\n2. First Name\n3. Last Name\n4. Full Name"
-        << "\nYour Choice: ";
-    std::cin >> choice;
+        << "\n1. ID\n2. First Name\n3. Last Name\n4. Full Name\n";
+    setUint(choice, "Choice: "); 
     switch (choice)
     {
         case 1: {
             int id;
-            std::cout << "Enter student ID: "; std::cin >> id;
+            setUint(id, "Enter student ID: "); 
             std::snprintf(query, sizeof(query),
                 "SELECT * FROM students WHERE ID=%d", id);
             break;
@@ -146,9 +145,8 @@ void Manager::Run () {
             << "2. Remove Student\n"
             << "3. Show List\n"
             << "4. Search Student\n"
-            << "5. Exit\n"
-            << "Your choice: ";
-        std::cin >> choice;
+            << "5. Exit\n";
+        setUint(choice, "Your choice: ");
         switch (choice) {
             case 1:
                 AddStudent();
