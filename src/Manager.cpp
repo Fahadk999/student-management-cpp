@@ -1,6 +1,5 @@
 #include "Manager.hpp"
 
-// add student search on id and name
 Manager::Manager () {
     studentDB.InitDB();
     const char* createTable =
@@ -145,7 +144,8 @@ void Manager::Run () {
             << "2. Remove Student\n"
             << "3. Show List\n"
             << "4. Search Student\n"
-            << "5. Exit\n";
+            << "5. Filter\n"
+            << "6. Exit\n";
         setUint(choice, "Your choice: ");
         switch (choice) {
             case 1:
@@ -161,11 +161,31 @@ void Manager::Run () {
                 SearchStudent();
                 break;
             case 5:
+                ShowFiltered();
+                break;
+            case 6:
                 std::cout << "Exited successfully\n";
                 running = false;
                 break;
             default:
-                std::cerr << "Wring choice!!";
+                std::cerr << "Wring choice!!\n";
         }
     } while (running);
+}
+
+void Manager::ShowFiltered () {
+    char query[300];
+    int choice;
+    std::cout <<
+        "Filter what?: \n1. Passed\n2.Failed\n";
+    setUint(choice, "Choice: ");
+    if (choice == 1) {
+        std::snprintf(query, sizeof(query), "SELECT * FROM students %s", "WHERE percentage >= 50.00;");
+    } else if (choice == 2) {
+        std::snprintf(query, sizeof(query), "SELECT * FROM students %s", "WHERE percentage < 50.00;");
+    } else {
+        std::cerr << "Wrong choice!\n";
+        return;
+    }
+    studentDB.ReadData(query);
 }

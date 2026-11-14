@@ -12,6 +12,7 @@ private:
 
     void AddStudent ();
     void RemoveStudent ();
+    void ShowFiltered ();
     void ShowList ();
     void SearchStudent ();
 public:
