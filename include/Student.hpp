@@ -80,6 +80,7 @@ void setUint (
 }
 
 inline void setString (char* buffer, const int& len, const char* msg) {
+    // overflow solution , temp big string store, if strlen <= nameLen valid
     std::cout << msg;
     std::cin.getline(buffer, len);
 };

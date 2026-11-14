@@ -145,7 +145,8 @@ void Manager::Run () {
             << "3. Show List\n"
             << "4. Search Student\n"
             << "5. Filter\n"
-            << "6. Exit\n";
+            << "6. Update Student\n"
+            << "7. Exit\n";
         setUint(choice, "Your choice: ");
         switch (choice) {
             case 1:
@@ -164,6 +165,9 @@ void Manager::Run () {
                 ShowFiltered();
                 break;
             case 6:
+                UpdateInfo();
+                break;
+            case 7:
                 std::cout << "Exited successfully\n";
                 running = false;
                 break;
@@ -188,4 +192,47 @@ void Manager::ShowFiltered () {
         return;
     }
     studentDB.ReadData(query);
+}
+
+void Manager::UpdateInfo () {
+    int choice;
+    int id;
+    setUint(id, "Enter student id to update: ");
+    std::cout << "Update what?:\n"
+        << "1. Name\n"
+        << "2. Age\n"
+        << "3. Marks\n";
+    setUint(choice, "Choice: ");
+    char query[500] = "UPDATE students SET ";
+    const size_t qLen = std::strlen(query);
+    switch (choice) {
+        case 1: {
+            std::cin.ignore();
+            // flag for sucess or not
+            // input first naem
+            char fnameBuffer[nameLen], lnameBuffer[nameLen];
+            setString(fnameBuffer, nameLen,"Enter First Name: ");
+            // input last name
+            setString(lnameBuffer, nameLen, "Enter Last Name: ");
+
+            // join both parts into query
+            std::snprintf(query + qLen, sizeof(query) - qLen, 
+                    "FirstName = '%s', LastName = '%s' WHERE ID = %d;", fnameBuffer, lnameBuffer, id);
+            break;
+                }
+        case 2: {
+                    // no feild of age rn
+            // int age;
+            // setUint(age, 150, "Enter new age: ");
+            // std::snprintf(query, sizeof(query), "%s Age = %d WHERE id = %d;", query, age, id);
+            break;
+                }
+        case 3: {
+            // whci marks? all or one
+            break;
+                }
+        default:
+            std::cerr << "Wrong Choice\n";
+    }
+    studentDB.Execute(query);
 }

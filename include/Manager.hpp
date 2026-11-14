@@ -15,6 +15,7 @@ private:
     void ShowFiltered ();
     void ShowList ();
     void SearchStudent ();
+    void UpdateInfo ();
 public:
     Manager ();
 
