@@ -212,7 +212,7 @@ void Manager::ShowFiltered () {
 void Manager::UpdateInfo () {
     int choice;
     int id;
-    setUint(id, "Enter student id to update: ");
+    setUint(id, "Enter student ID to update: ");
     std::cout << "Update what?:\n"
         << "1. Name\n"
         << "2. Age\n"
@@ -224,26 +224,54 @@ void Manager::UpdateInfo () {
         case 1: {
             std::cin.ignore();
             // flag for sucess or not
-            // input first naem
             char fnameBuffer[nameLen], lnameBuffer[nameLen];
             setString(fnameBuffer, nameLen,"Enter First Name: ");
-            // input last name
             setString(lnameBuffer, nameLen, "Enter Last Name: ");
 
-            // join both parts into query
             std::snprintf(query + qLen, sizeof(query) - qLen, 
                     "FirstName = '%s', LastName = '%s' WHERE ID = %d;", fnameBuffer, lnameBuffer, id);
             break;
                 }
         case 2: {
-                    // no feild of age rn
-            // int age;
-            // setUint(age, 150, "Enter new age: ");
-            // std::snprintf(query, sizeof(query), "%s Age = %d WHERE id = %d;", query, age, id);
+            int age;
+            setUint(age, 150, "Enter new age: ");
+            std::snprintf(query, sizeof(query), "%s Age = %d WHERE ID = %d;", query, age, id);
             break;
                 }
         case 3: {
-            // whci marks? all or one
+            const char* subject[] = {"Biology", "Chemistry", "Physics"};
+            std::cout << "How Many\n1. One\n2. All";
+            setUint(choice, "Choice: ");
+            switch (choice) {
+                case 1:
+                    int i = 1;
+                    for (const char** p = subject; p < subject + 3; p++) {
+                        std::cout << i++ << ". " << *p << '\n';
+                    }
+                    setUint(choice, "Pick a subject: ");
+                    std::sprintf(query, "%s", "UPDATE marks SET ");
+                    const size_t len = std::strlen(query); 
+                    switch (choice) {
+                        case 1: {
+                            int marks;
+                            setUint(marks, 101, "Enter updated marks: ");
+                            std::snprintf(query + len, sizeof(query) - len, 
+                            "%s = %d WHERE StudentId = %d;"
+                            , *subject + choice-1, marks, id); 
+                            break;
+                                }
+                        case 2: {
+                            int marks[3]; 
+                            for (int* p = marks; p < marks+3; p++) {
+                                std::cout << "hell"; 
+                            }
+                                }
+                        default: std::cout << "Enter a vaild subject number!\n";
+                            return;
+                    }
+                    break;
+                default: std::cout << "Wrong choice!\n"; return;
+                }
             break;
                 }
         default:
