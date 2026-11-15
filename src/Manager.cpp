@@ -2,6 +2,9 @@
 
 Manager::Manager () {
     studentDB.InitDB();
+    // for deleting cascade
+    studentDB.Execute("PRAGMA foregin_key = ON;");
+
     const char* queryOne =
         "CREATE TABLE IF NOT EXISTS students ("
         "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
@@ -16,7 +19,8 @@ Manager::Manager () {
         "Chemistry INTEGER,"
         "Physics INTEGER,"
         "Percentage REAL,"
-        "FOREIGN KEY (StudentId) REFERENCES students(ID));";
+        "FOREIGN KEY (StudentId) REFERENCES students(ID)"
+        " ON DELETE CASCADE);";
     studentDB.Execute(queryOne);
     studentDB.Execute(queryTwo);
 }
@@ -91,23 +95,25 @@ void Manager::ShowList () {
     auto len = std::strlen(query);
     std::snprintf(query + len, sizeof(query) - len , "%s;", "students");
     studentDB.ReadData(query);
-    std::snprintf(query + len, sizeof(query) - len , "%s;", "marks");
-    studentDB.ReadData(query);
 }
 
 void Manager::SearchStudent () {
-    char query[200];
+    char query[700];
     int choice;
     std::cout << "Search by"
         << "\n1. ID\n2. First Name\n3. Last Name\n4. Full Name\n";
     setUint(choice, "Choice: "); 
+    const char* selectList =
+        "students.ID, students.FirstName, students.LastName,"
+        "students.Age, marks.Biology, marks.Chemistry, marks.Physics,"
+        "marks.Percentage";
     switch (choice)
     {
         case 1: {
             int id;
             setUint(id, "Enter student ID: "); 
             std::snprintf(query, sizeof(query),
-                "SELECT * FROM students WHERE ID=%d", id);
+                "SELECT %s FROM students JOIN marks ON students.ID = marks.StudentId WHERE students.ID = %d", selectList, id);
             break;
                 }
         case 2: {
@@ -116,8 +122,9 @@ void Manager::SearchStudent () {
             std::cin.ignore();
             std::cin.getline(fnameBuffer, nameLen);
             std::snprintf(query, sizeof(query),
-                "SELECT * FROM students WHERE FirstName='%s';"
-                , fnameBuffer);
+                "SELECT %s FROM students JOIN marks ON "
+                "students.ID = marks.StudentId WHERE students.FirstName='%s';"
+                , selectList, fnameBuffer);
             break;
             }
         case 3: {
@@ -126,8 +133,9 @@ void Manager::SearchStudent () {
             std::cin.ignore();
             std::cin.getline(lnameBuffer, nameLen);
             std::snprintf(query, sizeof(query),
-                "SELECT * FROM students WHERE LastName='%s';"
-                , lnameBuffer);
+                "SELECT %s FROM students JOIN marks ON "
+                "students.ID = marks.StudentId WHERE students.LastName='%s';"
+                , selectList, lnameBuffer);
             break;
             }
         case 4: {
@@ -138,8 +146,10 @@ void Manager::SearchStudent () {
             std::cout << "Enter Student Last Name: ";
             std::cin.getline(lnameBuffer, nameLen);
             std::snprintf(query, sizeof(query),
-                "SELECT * FROM students WHERE FirstName='%s' AND LastName='%s';"
-                , fnameBuffer, lnameBuffer);
+                "SELECT %s FROM students JOIN marks ON "
+                "students.ID = marks.StudentId WHERE students.FirstName='%s' "
+                "AND students.LastName='%s';"
+                , selectList, fnameBuffer, lnameBuffer);
             break;
             }
         default:
@@ -150,9 +160,11 @@ void Manager::SearchStudent () {
 }
 
 void Manager::Run () {
+    //for linux only
     bool running = true;
     short int choice;
     do {
+        std::system("clear");
         std::cout << "--- Student Manager ---\n"
             << "1. Add Student\n"
             << "2. Remove Student\n"
@@ -175,6 +187,8 @@ void Manager::Run () {
                 break;
             default: std::cerr << "Wring choice!!\n";
         }
+        std::cin.ignore();
+        std::cin.get();
     } while (running);
 }
 
@@ -185,9 +199,9 @@ void Manager::ShowFiltered () {
         "Filter what?: \n1. Passed\n2.Failed\n";
     setUint(choice, "Choice: ");
     if (choice == 1) {
-        std::snprintf(query, sizeof(query), "SELECT * FROM students %s", "WHERE percentage >= 50.00;");
+        std::snprintf(query, sizeof(query), "SELECT students.* FROM students %s", "WHERE percentage >= 50.00;");
     } else if (choice == 2) {
-        std::snprintf(query, sizeof(query), "SELECT * FROM students %s", "WHERE percentage < 50.00;");
+        std::snprintf(query, sizeof(query), "SELECT students.* FROM students %s", "WHERE percentage < 50.00;");
     } else {
         std::cerr << "Wrong choice!\n";
         return;
