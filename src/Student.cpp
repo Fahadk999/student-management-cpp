@@ -1,7 +1,6 @@
 #include "Student.hpp"
 
 Info::Info (
-    unsigned int _id,
     const char* fname,
     const char* lname,
     const unsigned short int& _age,
@@ -9,7 +8,6 @@ Info::Info (
     double _percentage
         )
     :   
-    id(_id),
     age(_age),
     percentage(_percentage)
 {
@@ -17,12 +15,6 @@ Info::Info (
     strcpy(fnameBuffer, fname);
     strcpy(lnameBuffer, lname);
 }
-
-unsigned int Student::studentId = 0;
-Student::Student()
-{
-    id = studentId++;
-};
 
 void Student::SetInfo () {
     const short int maxMarks = 100;
@@ -38,7 +30,6 @@ void Student::SetInfo () {
 
 Info Student::GetInfo () const {
     Info info{
-            this->id,
             this->fnameBuffer,
             this->lnameBuffer,
             this->age,

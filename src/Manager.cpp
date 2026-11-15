@@ -2,43 +2,52 @@
 
 Manager::Manager () {
     studentDB.InitDB();
-    const char* createTable =
+    const char* queryOne =
         "CREATE TABLE IF NOT EXISTS students ("
         "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
         "FirstName TEXT NOT NULL,"
         "LastName TEXT NOT NULL,"
+        "Age INTEGER NOT NULL);";
+    const char* queryTwo =
+        "CREATE TABLE IF NOT EXISTS marks ("
+        "ID INTEGER PRIMARY KEY AUTOINCREMENT,
+        "StudentId INTEGER,
         "Biology INTEGER,"
         "Chemistry INTEGER,"
         "Physics INTEGER,"
-        "Percentage REAL"
-        ");";
-    studentDB.Execute(createTable);
+        "Percentage REAL,"
+        "FOREIGN KEY (StudentId) REFERENCES students(ID));";
+    studentDB.Execute(queryOne);
+    studentDB.Execute(queryTwo);
 }
 
 void Manager::AddStudent () {
     Student newStudent;
     newStudent.SetInfo();
-    if (studentCount < maxCount) {
-        Info info = newStudent.GetInfo();
-        char query[500];
+    Info info = newStudent.GetInfo();
+    char query[500];
 
-        std::snprintf(query, sizeof(query), 
-            "INSERT INTO students (FirstName, LastName, Biology, Chemistry, Physics, Percentage) "
-            "VALUES ('%s', '%s', %d, %d, %d, %.2f);",
-            info.fnameBuffer, 
-            info.lnameBuffer,
-            info.marks.bio, 
-            info.marks.chem, 
-            info.marks.phy, 
-            info.percentage
-        );
-        studentDB.Execute(query);
+    std::snprintf(query, sizeof(query), 
+        "INSERT INTO students (FirstName, LastName, Age) "
+        "VALUES ('%s', '%s', %d);",
+        info.fnameBuffer, 
+        info.lnameBuffer,
+        info.age
+    );
+    studentDB.Execute(query);
+    // -> get id of studnet <-
+    std::snprintf(query, sizeof(query)
+        "INSERT INTO marks (StudentId, Biology, Chemistry, Physics, Percentage) "
+        "VALUES (%d, %d, %d, %d, %.2f);",
+        info.marks.bio,
+        info.marks.chem,
+        info.marks.phy,
+        info.percentage
+    );
+    studentDB.Execute(query);
 
-        studentList[studentCount] = newStudent;
-        studentCount++;
-    } else {
-        std::cout << "List max capacity reached, empty it somehow\n";
-    }
+    studentList[studentCount] = newStudent;
+    studentCount++;
 }
 
 void Manager::RemoveStudent () {
@@ -149,30 +158,17 @@ void Manager::Run () {
             << "7. Exit\n";
         setUint(choice, "Your choice: ");
         switch (choice) {
-            case 1:
-                AddStudent();
-                break;
-            case 2:
-                RemoveStudent();
-                break;
-            case 3:
-                ShowList();
-                break;
-            case 4:
-                SearchStudent();
-                break;
-            case 5:
-                ShowFiltered();
-                break;
-            case 6:
-                UpdateInfo();
-                break;
+            case 1: AddStudent(); break;
+            case 2: RemoveStudent(); break;
+            case 3: ShowList(); break;
+            case 4: SearchStudent(); break;
+            case 5: ShowFiltered(); break;
+            case 6: UpdateInfo(); break;
             case 7:
                 std::cout << "Exited successfully\n";
                 running = false;
                 break;
-            default:
-                std::cerr << "Wring choice!!\n";
+            default: std::cerr << "Wring choice!!\n";
         }
     } while (running);
 }
