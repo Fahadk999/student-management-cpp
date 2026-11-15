@@ -3,6 +3,7 @@
 #include "Student.hpp"
 #include "Database.hpp"
 #include <iomanip>
+#include <cstdlib>
 
 class Manager {
 private:

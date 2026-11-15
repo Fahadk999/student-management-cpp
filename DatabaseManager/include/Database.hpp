@@ -10,7 +10,7 @@ int callback (void*, int, char**, char**);
 class Database {
 private:
     char dbName[35];
-    sqlite3* db;
+    sqlite3* db{nullptr};
     char* err{nullptr};
 
 public:
@@ -23,11 +23,6 @@ public:
     bool ClearDB (const char*); 
     void CloseDB ();
     bool Execute (const char*);
-    int GetArgV ();
+    int GetLastId ();
 };
 
-// temp here 
-int Database::GetLastId () {
-    // col Num
-    int colNum = 0;
-}
