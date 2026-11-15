@@ -1,8 +1,8 @@
 #include "Manager.hpp"
 
 int main () {
-    // Manager newManager;
+    Manager newManager;
 
-    // newManager.Run();
+    newManager.Run();
     return 0;
 }
