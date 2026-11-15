@@ -36,7 +36,7 @@ private:
     bool passStatus{false};
     // date to get date student was added
 public:
-    Student();
+    Student() = default;
 
     void SetInfo();
     Info GetInfo() const;

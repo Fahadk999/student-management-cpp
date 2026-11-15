@@ -10,8 +10,8 @@ Manager::Manager () {
         "Age INTEGER NOT NULL);";
     const char* queryTwo =
         "CREATE TABLE IF NOT EXISTS marks ("
-        "ID INTEGER PRIMARY KEY AUTOINCREMENT,
-        "StudentId INTEGER,
+        "ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+        "StudentId INTEGER,"
         "Biology INTEGER,"
         "Chemistry INTEGER,"
         "Physics INTEGER,"
@@ -35,10 +35,11 @@ void Manager::AddStudent () {
         info.age
     );
     studentDB.Execute(query);
-    // -> get id of studnet <-
-    std::snprintf(query, sizeof(query)
+    int studentId = studentDB.GetLastId();
+    std::snprintf(query, sizeof(query),
         "INSERT INTO marks (StudentId, Biology, Chemistry, Physics, Percentage) "
         "VALUES (%d, %d, %d, %d, %.2f);",
+        studentId,
         info.marks.bio,
         info.marks.chem,
         info.marks.phy,
@@ -85,8 +86,12 @@ void Manager::RemoveStudent () {
 }
 
 void Manager::ShowList () {
-    const char* query =
-        "SELECT * FROM students;";
+    char query[200] =
+        "SELECT * FROM ";
+    auto len = std::strlen(query);
+    std::snprintf(query + len, sizeof(query) - len , "%s;", "students");
+    studentDB.ReadData(query);
+    std::snprintf(query + len, sizeof(query) - len , "%s;", "marks");
     studentDB.ReadData(query);
 }
 

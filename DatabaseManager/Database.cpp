@@ -78,3 +78,7 @@ bool Database::ClearDB (const char* tableName) {
 void Database::CloseDB () {
     sqlite3_close(db);
 }
+
+int Database::GetLastId () {
+    return static_cast<int>(sqlite3_last_insert_rowid(db));
+}
