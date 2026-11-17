@@ -1,5 +1,10 @@
 #include "Manager.hpp"
 
+const char* selectList =
+    "students.ID, students.FirstName, students.LastName,"
+    "students.Age, marks.Biology, marks.Chemistry, marks.Physics,"
+    "marks.Percentage";
+
 Manager::Manager () {
     studentDB.InitDB();
     // for deleting cascade
@@ -90,10 +95,28 @@ void Manager::RemoveStudent () {
 }
 
 void Manager::ShowList () {
-    char query[200] =
-        "SELECT * FROM ";
-    auto len = std::strlen(query);
-    std::snprintf(query + len, sizeof(query) - len , "%s;", "students");
+    char query[200];
+    int choice;
+    std::cout << "Lists to see:\n"
+        "1. Students\n"
+        "2. Marks\n"
+        "3. Both\n";
+    setUint(choice, "Choice: ");
+    switch (choice) {
+        case 1:
+            std::snprintf(query, sizeof(query), 
+                "SELECT * FROM %s;", "students");
+            break;
+        case 2:
+            std::snprintf(query, sizeof(query), 
+                "SELECT * FROM %s;", "marks");
+            break;
+        case 3:
+            std::snprintf(query, sizeof(query), 
+                "SELECT %s FROM students JOIN marks ON students.ID = marks.StudentId;", selectList);
+            break;
+        default: return; // default
+    }
     studentDB.ReadData(query);
 }
 
@@ -103,10 +126,6 @@ void Manager::SearchStudent () {
     std::cout << "Search by"
         << "\n1. ID\n2. First Name\n3. Last Name\n4. Full Name\n";
     setUint(choice, "Choice: "); 
-    const char* selectList =
-        "students.ID, students.FirstName, students.LastName,"
-        "students.Age, marks.Biology, marks.Chemistry, marks.Physics,"
-        "marks.Percentage";
     switch (choice)
     {
         case 1: {
@@ -188,6 +207,7 @@ void Manager::Run () {
             default: std::cerr << "Wring choice!!\n";
         }
         std::cin.ignore();
+        std::cout << "Press Enter to continue...";
         std::cin.get();
     } while (running);
 }
@@ -195,13 +215,18 @@ void Manager::Run () {
 void Manager::ShowFiltered () {
     char query[300];
     int choice;
+    // sort and custom threshold
     std::cout <<
         "Filter what?: \n1. Passed\n2.Failed\n";
     setUint(choice, "Choice: ");
     if (choice == 1) {
-        std::snprintf(query, sizeof(query), "SELECT students.* FROM students %s", "WHERE percentage >= 50.00;");
+        std::snprintf(query, sizeof(query), "SELECT students.*, marks.Percentage FROM students "
+            "JOIN marks ON students.ID = marks.StudentId %s"
+            , "WHERE marks.Percentage >= 50.00;");
     } else if (choice == 2) {
-        std::snprintf(query, sizeof(query), "SELECT students.* FROM students %s", "WHERE percentage < 50.00;");
+        std::snprintf(query, sizeof(query), "SELECT students.*, marks.Percentage FROM students "
+            "JOIN marks ON students.ID = marks.StudentId %s"
+            , "WHERE marks.Percentage < 50.00;");
     } else {
         std::cerr << "Wrong choice!\n";
         return;
@@ -218,7 +243,7 @@ void Manager::UpdateInfo () {
         << "2. Age\n"
         << "3. Marks\n";
     setUint(choice, "Choice: ");
-    char query[500] = "UPDATE students SET ";
+    char query[700] = "UPDATE students SET ";
     const size_t qLen = std::strlen(query);
     switch (choice) {
         case 1: {
@@ -229,13 +254,15 @@ void Manager::UpdateInfo () {
             setString(lnameBuffer, nameLen, "Enter Last Name: ");
 
             std::snprintf(query + qLen, sizeof(query) - qLen, 
-                    "FirstName = '%s', LastName = '%s' WHERE ID = %d;", fnameBuffer, lnameBuffer, id);
+                "FirstName = '%s', LastName = '%s' WHERE ID = %d;", 
+                fnameBuffer, lnameBuffer, id);
             break;
                 }
         case 2: {
             int age;
             setUint(age, 150, "Enter new age: ");
-            std::snprintf(query, sizeof(query), "%s Age = %d WHERE ID = %d;", query, age, id);
+            std::snprintf(query + qLen, sizeof(query) - qLen,
+                " Age = %d WHERE ID = %d;", age, id);
             break;
                 }
         case 3: {
@@ -243,7 +270,7 @@ void Manager::UpdateInfo () {
             std::cout << "How Many\n1. One\n2. All";
             setUint(choice, "Choice: ");
             switch (choice) {
-                case 1:
+                case 1: {
                     int i = 1;
                     for (const char** p = subject; p < subject + 3; p++) {
                         std::cout << i++ << ". " << *p << '\n';
@@ -251,31 +278,30 @@ void Manager::UpdateInfo () {
                     setUint(choice, "Pick a subject: ");
                     std::sprintf(query, "%s", "UPDATE marks SET ");
                     const size_t len = std::strlen(query); 
-                    switch (choice) {
-                        case 1: {
-                            int marks;
-                            setUint(marks, 101, "Enter updated marks: ");
-                            std::snprintf(query + len, sizeof(query) - len, 
-                            "%s = %d WHERE StudentId = %d;"
-                            , *subject + choice-1, marks, id); 
-                            break;
-                                }
-                        case 2: {
-                            int marks[3]; 
-                            for (int* p = marks; p < marks+3; p++) {
-                                std::cout << "hell"; 
-                            }
-                                }
-                        default: std::cout << "Enter a vaild subject number!\n";
-                            return;
-                    }
+                    int marks;
+                    setUint(marks, 101, "Enter updated marks: ");
+                    std::snprintf(query + len, sizeof(query) - len, 
+                        "%s = %d WHERE StudentId = %d;"
+                        , *(subject + choice-1), marks, id); 
                     break;
-                default: std::cout << "Wrong choice!\n"; return;
-                }
+                        }
+                case 2: {
+                    int marks[3]; 
+                    const char** c = subject;
+                    for (int* p = marks; p < marks+3; p++) {
+                        char statement[200];
+                        std::snprintf(statement, sizeof(statement),
+                            "Enter %s marks: ", *c);
+                        setUint(*p, 101, statement);
+                        c++;
+                    } // new percentage also here
+                    break;
+                        }
+                default: std::cout << "Enter a vaild subject number!\n"; return;
+            }
             break;
                 }
-        default:
-            std::cerr << "Wrong Choice\n";
+        default: std::cout << "Wrong choice!\n"; return;
     }
     studentDB.Execute(query);
 }
