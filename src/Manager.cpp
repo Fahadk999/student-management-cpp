@@ -243,7 +243,7 @@ void Manager::UpdateInfo () {
             std::cout << "How Many\n1. One\n2. All";
             setUint(choice, "Choice: ");
             switch (choice) {
-                case 1:
+                case 1: {
                     int i = 1;
                     for (const char** p = subject; p < subject + 3; p++) {
                         std::cout << i++ << ". " << *p << '\n';
@@ -270,6 +270,7 @@ void Manager::UpdateInfo () {
                             return;
                     }
                     break;
+                        }
                 default: std::cout << "Wrong choice!\n"; return;
                 }
             break;

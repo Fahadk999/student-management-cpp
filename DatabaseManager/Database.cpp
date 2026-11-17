@@ -1,10 +1,17 @@
 #include "Database.hpp"
 
 int callback (void* data, int argc, char** argv, char** colName) {
+    bool* headerPrinted = static_cast<bool*>(data);
+    if (!*headerPrinted) {
+        for (int i = 0; i < argc; i++) {
+            std::cout 
+                << std::setw(30) << colName [i] << " | ";
+        } std::cout << '\n';
+        *headerPrinted = true;
+    }
     for (int i = 0; i < argc; i++) {
         std::cout 
-            << colName [i] << ": "
-            << (argv[i] ? argv[i] : "NULL")
+            << std::setw(30) << (argv[i] ? argv[i] : "NULL")
             << " | ";
     } std::cout << "\n";
     return 0;
@@ -48,11 +55,12 @@ bool Database::MakeTable (const char* query) {
 
 bool Database::ReadData (const char* query) {
     char *errMsg = nullptr;
+    bool headerPrinted = false;
     int rc = sqlite3_exec(
         db,
         query,
         callback,
-        nullptr,
+        &headerPrinted,
         &errMsg
     );
 
